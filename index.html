@@ -1,1 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malla Aeronáutica</title>
+
+<style>
+body{
+    font-family: 'Segoe UI', sans-serif;
+    margin:0;
+    background: linear-gradient(135deg,#f3e8ff,#e0c3fc);
+    text-align:center;
+}
+
+h1{
+    background:#6a4c93;
+    color:white;
+    padding:20px;
+    margin:0;
+}
+
+.progreso-container{
+    padding:15px;
+}
+
+.barra{
+    width:90%;
+    max-width:400px;
+    margin:10px auto;
+    height:20px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.barra-progreso{
+    height:100%;
+    width:0%;
+    background:#7b2cbf;
+    transition:0.3s;
+}
+
+.contenedor{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+    padding:20px;
+}
+
+.semestre{
+    background:#ffffffaa;
+    backdrop-filter:blur(10px);
+    padding:15px;
+    border-radius:15px;
+    width:320px;
+}
+
+.semestre h2{
+    background:#b185db;
+    padding:10px;
+    border-radius:10px;
+    color:white;
+}
+
+.ramo{
+    display:block;
+    width:100%;
+    margin:8px 0;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#d0bdf4;
+    font-weight:bold;
+    transition:0.2s;
+}
+
+.ramo:hover{
+    transform:scale(1.03);
+}
+
+.ramo.bloqueado{
+    background:#ccc;
+    cursor:not-allowed;
+    opacity:0.6;
+}
+
+.ramo.aprobado{
+    background:#7b2cbf;
+    color:white;
+}
+
+@media(max-width:768px){
+    .contenedor{
+        flex-direction:column;
+        align-items:center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Malla Aeronáutica 💜</h1>
+
+<div class="progreso-container">
+    <h3>Progreso: <span id="porcentaje">0%</span></h3>
+    <div class="barra">
+        <div class="barra-progreso" id="barra"></div>
+    </div>
+</div>
+
+<div class="contenedor">
+
+<!-- SEMESTRES -->
+<div class="semestre">
+<h2>Año 1 - Semestre 1</h2>
+<button class="ramo" id="CAE012">CAE012-A Dibujo técnico</button>
+<button class="ramo" id="EFI100">EFI100-T Educación física</button>
+<button class="ramo" id="MAT001">MAT001-A Elementos matemáticas</button>
+<button class="ramo" id="CAE013">CAE013-A Inglés Técnico</button>
+<button class="ramo" id="FIS004">FIS004-A Física aplicada</button>
+<button class="ramo" id="CAE011">CAE011-A Tecnología materiales</button>
+</div>
+
+<div class="semestre">
+<h2>Año 1 - Semestre 2</h2>
+<button class="ramo bloqueado" id="CAE022">CAE022-A Aeronáutica</button>
+<button class="ramo bloqueado" id="CAE024">CAE024-A Estructuras</button>
+<button class="ramo bloqueado" id="CAE021">CAE021-A Gestión mant.</button>
+<button class="ramo bloqueado" id="CAE025">CAE025-A Inglés II</button>
+<button class="ramo bloqueado" id="MAT002">MAT002-A Matemática aplicada</button>
+<button class="ramo bloqueado" id="CAE023">CAE023-A Sistemas eléctricos</button>
+</div>
+
+<div class="semestre">
+<h2>Año 2 - Semestre 3</h2>
+<button class="ramo bloqueado" id="CAE033">CAE033-A Hidroneumática</button>
+<button class="ramo bloqueado" id="CAE036">CAE036-A Inglés III</button>
+<button class="ramo bloqueado" id="CAE034">CAE034-A Motores recíprocos</button>
+<button class="ramo bloqueado" id="CAE032">CAE032-A Seguridad operacional</button>
+<button class="ramo bloqueado" id="CAE031">CAE031-A Sistemas digitales</button>
+<button class="ramo bloqueado" id="CAE035">CAE035-A Sistemas electrónicos</button>
+</div>
+
+<div class="semestre">
+<h2>Año 2 - Semestre 4</h2>
+<button class="ramo bloqueado" id="CAE042">CAE042-A Ala rotatoria</button>
+<button class="ramo bloqueado" id="CAE043">CAE043-A Aviónica</button>
+<button class="ramo bloqueado" id="CAE045">CAE045-A Inglés conversacional</button>
+<button class="ramo bloqueado" id="CAE041">CAE041-A Microprocesadores</button>
+<button class="ramo bloqueado" id="CAE044">CAE044-A Motores turbina</button>
+</div>
+
+</div>
+
+<script>
+
+let ramos = document.querySelectorAll(".ramo");
+
+ramos.forEach(ramo=>{
+    ramo.addEventListener("click", function(){
+
+        if(this.classList.contains("bloqueado")) return;
+
+        this.classList.toggle("aprobado");
+
+        guardarProgreso();
+        verificarDesbloqueos();
+        actualizarProgreso();
+    });
+});
+
+function aprobado(id){
+    return document.getElementById(id).classList.contains("aprobado");
+}
+
+function desbloquear(id){
+    document.getElementById(id).classList.remove("bloqueado");
+}
+
+function verificarDesbloqueos(){
+
+    if(aprobado("FIS004") && aprobado("CAE013")) desbloquear("CAE022");
+    if(aprobado("CAE013")) desbloquear("CAE024");
+    if(aprobado("CAE012") && aprobado("EFI100") && aprobado("MAT001") && aprobado("CAE013") && aprobado("FIS004") && aprobado("CAE011")) desbloquear("CAE021");
+    if(aprobado("CAE013")) desbloquear("CAE025");
+    if(aprobado("MAT001")) { desbloquear("MAT002"); desbloquear("CAE023"); }
+
+    if(aprobado("MAT001") && aprobado("FIS004")) desbloquear("CAE033");
+    if(aprobado("CAE025")) desbloquear("CAE036");
+    if(aprobado("CAE025") && aprobado("CAE021")) desbloquear("CAE034");
+    if(aprobado("CAE021")) desbloquear("CAE032");
+    if(aprobado("MAT002")) desbloquear("CAE031");
+    if(aprobado("MAT002") && aprobado("CAE023")) desbloquear("CAE035");
+
+    if(aprobado("CAE034")) { desbloquear("CAE042"); desbloquear("CAE044"); }
+    if(aprobado("CAE031") && aprobado("CAE035")) desbloquear("CAE043");
+    if(aprobado("CAE036")) desbloquear("CAE045");
+    if(aprobado("CAE031")) desbloquear("CAE041");
+}
+
+function actualizarProgreso(){
+    let aprobados = document.querySelectorAll(".aprobado").length;
+    let total = ramos.length;
+    let porcentaje = Math.round((aprobados/total)*100);
+
+    document.getElementById("porcentaje").innerText = porcentaje + "%";
+    document.getElementById("barra").style.width = porcentaje + "%";
+}
+
+function guardarProgreso(){
+    let datos = [];
+    ramos.forEach(r=>{
+        datos.push({
+            id:r.id,
+            aprobado:r.classList.contains("aprobado")
+        });
+    });
+    localStorage.setItem("mallaProgreso", JSON.stringify(datos));
+}
+
+function cargarProgreso(){
+    let datos = JSON.parse(localStorage.getItem("mallaProgreso"));
+    if(!datos) return;
+
+    datos.forEach(d=>{
+        if(d.aprobado)
+            document.getElementById(d.id).classList.add("aprobado");
+    });
+
+    verificarDesbloqueos();
+    actualizarProgreso();
+}
+
+cargarProgreso();
+
+</script>
+
+</body>
+</html>
 
